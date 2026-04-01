@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STR Portfolio Analysis — Going Beyond the Numbers</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal-dark:#0A6E6E;--teal:#0D8C8C;--teal-mid:#1AABAB;--teal-light:#D0EEEE;--teal-pale:#EAF7F7;
+  --navy:#0D2B3E;--text:#1A3A4A;--grey:#6B8A99;--white:#FFFFFF;--bg:#F4FAFA;
+  --red:#D94F4F;--red-l:#FDEAEA;--orange:#E07A30;--yel:#C49000;--yel-l:#FDF6E3;--green:#2A8A5A;--grn-l:#E6F6EE;
+  --border:#C8E6E6;--purple:#6B5CE7;--purple-l:#EFECFD;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(10,110,110,0.08)}
+.logo-text{font-family:'Nunito',sans-serif;font-size:17px;font-weight:900;color:var(--teal-dark);letter-spacing:.5px}
+.top-actions{display:flex;gap:10px;align-items:center}
+.dl-btn{padding:7px 16px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--teal-dark);text-decoration:none;transition:all .2s;font-family:'Nunito Sans',sans-serif;display:inline-flex;align-items:center;gap:5px}
+.dl-btn:hover{background:var(--teal-pale);border-color:var(--teal)}
+.dl-btn.primary{background:var(--teal-dark);color:white;border-color:var(--teal-dark)}
+.dl-btn.primary:hover{background:var(--teal)}
+
+.hero{background:linear-gradient(135deg,var(--teal-dark) 0%,#0A8A8A 60%,var(--teal-mid) 100%);padding:48px 48px 40px;color:white}
+.hero-inner{max-width:1360px;margin:0 auto;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px}
+.hero-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:12px}
+.hero h1{font-family:'Nunito',sans-serif;font-size:clamp(24px,3.2vw,38px);font-weight:900;line-height:1.15;margin-bottom:8px}
+.hero-sub{font-size:13px;color:rgba(255,255,255,0.7);max-width:520px;line-height:1.7}
+.kpi-row{display:flex;gap:12px;flex-wrap:wrap}
+.kpi{background:rgba(255,255,255,0.14);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.22);border-radius:12px;padding:14px 20px;text-align:center;min-width:90px}
+.kpi-val{font-family:'Nunito',sans-serif;font-size:28px;font-weight:900;color:white;line-height:1}
+.kpi-lbl{font-size:9px;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+.kpi.red .kpi-val{color:#FFB3B3}.kpi.yellow .kpi-val{color:#FFE599}.kpi.green .kpi-val{color:#A8EBC8}.kpi.purple .kpi-val{color:#C4B8FF}
+
+.tabs-wrap{background:var(--white);border-bottom:1px solid var(--border);padding:0 48px}
+.tabs{display:flex;max-width:1360px;margin:0 auto;overflow-x:auto}
+.tab{padding:15px 22px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--grey);border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;font-family:'Nunito Sans',sans-serif;text-transform:uppercase;letter-spacing:.5px}
+.tab.active{color:var(--teal-dark);border-bottom-color:var(--teal-dark)}
+.tab:hover:not(.active){color:var(--teal);border-bottom-color:var(--teal-light)}
+
+.main{max-width:1360px;margin:0 auto;padding:32px 48px 60px}
+.section{display:none}.section.active{display:block}
+.section-head{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal-dark);margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid var(--teal-light)}
+
+/* MARKET CARDS */
+.market-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.market-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:22px;transition:box-shadow .2s,transform .2s}
+.market-card:hover{box-shadow:0 6px 24px rgba(10,110,110,0.10);transform:translateY(-2px)}
+.mc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.mc-market{font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:var(--navy)}
+.mc-type{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:4px 10px;border-radius:20px}
+.mc-type.urban{background:#E8F0FB;color:#1A5FAB}.mc-type.resort{background:var(--teal-pale);color:var(--teal-dark)}.mc-type.coastal{background:#FEF4E8;color:#B05A10}.mc-type.nature{background:var(--grn-l);color:var(--green)}
+.mc-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.mc-stat{text-align:center;background:var(--bg);border-radius:8px;padding:10px 6px}
+.mc-stat-val{font-family:'Nunito',sans-serif;font-size:20px;font-weight:900;color:var(--teal-dark)}
+.mc-stat-lbl{font-size:8px;color:var(--grey);text-transform:uppercase;letter-spacing:.8px;margin-top:2px;font-weight:600}
+.mc-bar{margin-top:12px;padding:8px 12px;border-radius:8px;font-size:11px;font-weight:700}
+.mc-bar.urgent{background:var(--red-l);color:var(--red)}.mc-bar.good{background:var(--grn-l);color:var(--green)}.mc-bar.mixed{background:var(--yel-l);color:var(--yel)}
+
+/* TABLE */
+.table-card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(10,110,110,0.06)}
+.filter-bar{display:flex;gap:6px;padding:14px 18px;border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center;background:var(--teal-pale)}
+.filter-lbl{font-size:10px;color:var(--grey);font-weight:700;margin-right:4px;text-transform:uppercase;letter-spacing:1px}
+.filter-btn{padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--grey);transition:all .2s;font-family:'Nunito Sans',sans-serif}
+.filter-btn.active{background:var(--teal-dark);color:white;border-color:var(--teal-dark)}
+.filter-btn:hover:not(.active){border-color:var(--teal);color:var(--teal-dark)}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:11px;min-width:1100px}
+thead th{background:var(--teal-pale);padding:11px 12px;text-align:left;font-size:8px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;color:var(--teal-dark);border-bottom:2px solid var(--teal-light);white-space:nowrap}
+tbody tr{border-bottom:1px solid #EEF6F6;transition:background .15s}
+tbody tr:hover{background:var(--teal-pale)}
+tbody td{padding:11px 12px;color:var(--text);vertical-align:middle}
+.prop-name{font-weight:700;color:var(--navy);font-size:11px;max-width:170px}
+.prop-sub{font-size:9px;color:var(--grey);margin-top:2px;font-weight:600}
+.health-pill{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;font-family:'Nunito',sans-serif;font-weight:900;font-size:12px}
+.health-pill.good{background:var(--grn-l);color:var(--green);border:2px solid #90D4B0}
+.health-pill.fair{background:var(--yel-l);color:var(--yel);border:2px solid #EED080}
+.health-pill.poor{background:#FEF0E4;color:var(--orange);border:2px solid #F0B070}
+.health-pill.critical{background:var(--red-l);color:var(--red);border:2px solid #F5AAAA}
+.signal-tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:9px;font-weight:800;white-space:nowrap;letter-spacing:.3px}
+.sg-strong{background:var(--grn-l);color:var(--green)}
+.sg-seasonal{background:var(--yel-l);color:var(--yel)}
+.sg-intervention{background:var(--red-l);color:var(--red)}
+.sg-host{background:var(--purple-l);color:var(--purple)}
+.sg-new{background:#E8F0FB;color:#1A5FAB}
+.type-tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:8px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap}
+.t-urban{background:#E8F0FB;color:#1A5FAB}.t-resort{background:var(--teal-pale);color:var(--teal-dark)}.t-coastal{background:#FEF4E8;color:#B05A10}.t-nature{background:var(--grn-l);color:var(--green)}
+.rec-cell{max-width:280px;font-size:10px;line-height:1.6;font-weight:600}
+.rec-pct{font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;white-space:nowrap}
+.rec-pct.up{color:var(--green)}.rec-pct.down{color:var(--red)}.rec-pct.hold{color:var(--grey)}
+
+/* METHODOLOGY */
+.meth-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.meth-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:26px}
+.meth-title{font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;color:var(--teal-dark);margin-bottom:16px;text-transform:uppercase;letter-spacing:.8px}
+.matrix-grid{display:grid;grid-template-columns:auto 1fr 1fr;gap:0;border:2px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.mx-header{background:var(--teal-dark);color:white;padding:10px;font-size:10px;font-weight:800;text-align:center;text-transform:uppercase;letter-spacing:.5px}
+.mx-label{background:var(--teal-pale);padding:12px;font-size:10px;font-weight:800;color:var(--teal-dark);display:flex;align-items:center;text-transform:uppercase;letter-spacing:.5px;border-right:1px solid var(--border)}
+.mx-cell{padding:14px;text-align:center;border:1px solid var(--border)}
+.mx-cell .mx-icon{font-size:24px;margin-bottom:4px}
+.mx-cell .mx-name{font-family:'Nunito',sans-serif;font-size:11px;font-weight:900;margin-bottom:3px}
+.mx-cell .mx-desc{font-size:9px;color:var(--grey);line-height:1.5}
+.lead-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:11px;color:var(--text);font-weight:600}
+.lead-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.threshold-row{display:flex;gap:10px;align-items:center;margin-bottom:8px;font-size:11px;color:var(--text);font-weight:600}
+.threshold-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.insight-box{margin-top:14px;padding:12px;background:var(--teal-pale);border-left:3px solid var(--teal-dark);border-radius:0 8px 8px 0;font-size:11px;color:var(--teal-dark);font-weight:700;line-height:1.7}
+.meth-full{grid-column:1/-1}
+
+footer{text-align:center;padding:24px;border-top:1px solid var(--border);background:var(--white);font-size:11px;color:var(--grey);font-weight:600;letter-spacing:.3px}
+@media(max-width:900px){.hero-inner{grid-template-columns:1fr}.meth-grid{grid-template-columns:1fr}.main{padding:20px 16px}.topbar,.hero,.tabs-wrap{padding-left:16px;padding-right:16px}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="logo-text">Going Beyond the Numbers</span>
+  <div class="top-actions">
+    <a class="dl-btn" href="./assets/BP_Portfolio_Analysis.xlsx" download>📊 Spreadsheet</a>
+    <a class="dl-btn" href="./assets/BP_Analysis_Document.docx" download>📄 Analysis Doc</a>
+    <a class="dl-btn primary" href="https://github.com/gagrisi/going-beyond-the-numbers" target="_blank">⭐ GitHub</a>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-label">STR Portfolio Analysis</div>
+      <h1>Going Beyond the Numbers</h1>
+      <p class="hero-sub">A market-context approach to dynamic pricing portfolio management — analyzing 20 STR properties across 6 international markets using health diagnostics, occupancy matrices, and lead-time classification.</p>
+    </div>
+    <div class="kpi-row" id="kpi-row"></div>
+  </div>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('portfolio',this)">Portfolio Detail</button>
+    <button class="tab" onclick="showTab('markets',this)">Market Overview</button>
+    <button class="tab" onclick="showTab('methodology',this)">Methodology</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- PORTFOLIO DETAIL -->
+  <div class="section active" id="portfolio">
+    <div class="section-head">Property-Level Analysis — All 20 Listings</div>
+    <div class="table-card">
+      <div class="filter-bar">
+        <span class="filter-lbl">Signal:</span>
+        <button class="filter-btn active" onclick="applyFilter('all',this)">All (20)</button>
+        <button class="filter-btn" onclick="applyFilter('intervention',this)">🔴 Intervention</button>
+        <button class="filter-btn" onclick="applyFilter('host',this)">⚠️ Host Issue</button>
+        <button class="filter-btn" onclick="applyFilter('seasonal',this)">🟡 Monitor</button>
+        <button class="filter-btn" onclick="applyFilter('strong',this)">🟢 Strong</button>
+        <span style="margin-left:12px" class="filter-lbl">Market:</span>
+        <button class="filter-btn" onclick="applyFilter('Chicago',this)">Chicago</button>
+        <button class="filter-btn" onclick="applyFilter('Aspen',this)">Aspen & Vail</button>
+        <button class="filter-btn" onclick="applyFilter('Barcelona',this)">Barcelona</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>Listing</th><th>Type</th><th>Health</th><th>Occ 30d</th><th>Adj 30d</th><th>Occ 90d</th>
+            <th>Min / Base</th><th>% at Min</th><th>Lead Time</th><th>Signal</th><th>Rec %</th><th>Recommendation</th>
+          </tr></thead>
+          <tbody id="tbl-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARKET OVERVIEW -->
+  <div class="section" id="markets">
+    <div class="section-head">Market Overview — 6 Markets Analyzed</div>
+    <div class="market-grid" id="market-grid"></div>
+  </div>
+
+  <!-- METHODOLOGY -->
+  <div class="section" id="methodology">
+    <div class="section-head">Methodology — Market-Context Framework</div>
+    <div class="meth-grid">
+
+      <!-- 30/90 MATRIX -->
+      <div class="meth-card meth-full">
+        <div class="meth-title">30-Day / 90-Day Occupancy Decision Matrix</div>
+        <p style="font-size:12px;color:var(--grey);margin-bottom:16px;line-height:1.6">The core diagnostic tool. Instead of a single score, we cross-reference near-term (30d) and forward-looking (90d) occupancy to determine the correct action — avoiding the common mistake of cutting base price during a normal seasonal dip.</p>
+        <div class="matrix-grid">
+          <div class="mx-header"></div>
+          <div class="mx-header">90d Occ ≥ 30% (Healthy)</div>
+          <div class="mx-header">90d Occ < 30% (Low)</div>
+          <div class="mx-label">30d Occ ≥ 50%<br>(Booking)</div>
+          <div class="mx-cell" style="background:var(--grn-l)"><div class="mx-icon">🟢</div><div class="mx-name">STRONG</div><div class="mx-desc">Demand confirmed. Maintain or raise base price — property is performing well.</div></div>
+          <div class="mx-cell" style="background:#E8F9EE"><div class="mx-icon">🟢</div><div class="mx-name">SHORT WINDOW</div><div class="mx-desc">Market books close-in. Low 90d is normal. No panic — demand materializes near check-in.</div></div>
+          <div class="mx-label">30d Occ < 50%<br>(Soft)</div>
+          <div class="mx-cell" style="background:var(--yel-l)"><div class="mx-icon">🟡</div><div class="mx-name">SEASONAL</div><div class="mx-desc">Low season or off-peak. Don't cut base — use last-minute discounts. 90d shows future demand building.</div></div>
+          <div class="mx-cell" style="background:var(--red-l)"><div class="mx-icon">🔴</div><div class="mx-name">INTERVENTION</div><div class="mx-desc">Both windows weak. Base price reduction required. Validate with health score and market context.</div></div>
+        </div>
+        <div class="insight-box">⚠️ <strong>HOST ISSUE override:</strong> When % Blocked ≥ 50%, the signal becomes a host coaching conversation regardless of occupancy. The algorithm can't optimize inventory that isn't available.</div>
+      </div>
+
+      <!-- LEAD TIME -->
+      <div class="meth-card">
+        <div class="meth-title">Lead Time Classification</div>
+        <p style="font-size:11px;color:var(--grey);margin-bottom:14px;line-height:1.6">How far in advance guests book reveals the market's demand pattern and determines how urgently low occupancy should be treated.</p>
+        <div class="lead-row"><div class="lead-dot" style="background:var(--red)"></div><strong>Last-Minute (0–14d)</strong> — Guests book impulsively. Price sensitivity high.</div>
+        <div class="lead-row"><div class="lead-dot" style="background:var(--orange)"></div><strong>Short Window (15–45d)</strong> — Urban/weekend pattern. Demand close-in.</div>
+        <div class="lead-row"><div class="lead-dot" style="background:var(--yel)"></div><strong>Standard (46–90d)</strong> — Typical vacation planning window.</div>
+        <div class="lead-row"><div class="lead-dot" style="background:var(--teal)"></div><strong>Advance (91–180d)</strong> — Seasonal/luxury, plans far ahead.</div>
+        <div class="lead-row"><div class="lead-dot" style="background:var(--teal-dark)"></div><strong>Far-Out (180d+)</strong> — Peak-season driven, books months ahead.</div>
+      </div>
+
+      <!-- HEALTH SCORE -->
+      <div class="meth-card">
+        <div class="meth-title">Health Score Thresholds</div>
+        <p style="font-size:11px;color:var(--grey);margin-bottom:14px;line-height:1.6">Platform-native metric measuring how close occupancy is to optimal neighborhood occupancy. Key nuance: high occupancy ≠ high health score — and vice versa.</p>
+        <div class="threshold-row"><div class="threshold-dot" style="background:var(--green)"></div><strong>80–100: Good</strong> — Maintain pricing strategy</div>
+        <div class="threshold-row"><div class="threshold-dot" style="background:var(--yel)"></div><strong>60–79: Fair</strong> — Room for improvement</div>
+        <div class="threshold-row"><div class="threshold-dot" style="background:var(--orange)"></div><strong>40–59: Poor</strong> — Intervention recommended</div>
+        <div class="threshold-row"><div class="threshold-dot" style="background:var(--red)"></div><strong>0–39: Critical</strong> — Urgent review required</div>
+        <div class="insight-box">💡 Health Score is the <strong>primary signal</strong> for base price adjustment. Monitor every 2 weeks minimum. The score reflects market-relative performance, not absolute occupancy.</div>
+      </div>
+
+      <!-- MIN/BASE RATIO -->
+      <div class="meth-card">
+        <div class="meth-title">Min / Base Price Ratio</div>
+        <p style="font-size:11px;color:var(--grey);margin-bottom:14px;line-height:1.6">The minimum price as a percentage of base price determines how much room the dynamic pricing algorithm has to flex. A tight ratio handcuffs the algorithm.</p>
+        <div class="threshold-row"><div class="threshold-dot" style="background:var(--green)"></div><strong>< 50%</strong> — Wide spread. Algorithm has full flex.</div>
+        <div class="threshold-row"><div class="threshold-dot" style="background:var(--yel)"></div><strong>50–75%</strong> — Moderate. Acceptable for most markets.</div>
+        <div class="threshold-row"><div class="threshold-dot" style="background:var(--orange)"></div><strong>75–85%</strong> — Tight. Algorithm is constrained.</div>
+        <div class="threshold-row"><div class="threshold-dot" style="background:var(--red)"></div><strong>> 85%</strong> — Frozen. Effectively fixed pricing.</div>
+        <div class="insight-box">🔑 When Min/Base > 80% AND % at Min > 40%, the algorithm has <strong>stopped being dynamic</strong>. The most common fix: lower the minimum price, not the base.</div>
+      </div>
+
+      <!-- WHY MARKET-CONTEXT -->
+      <div class="meth-card">
+        <div class="meth-title">Why Market-Context Over a Single Score</div>
+        <p style="font-size:11px;color:var(--grey);margin-bottom:14px;line-height:1.6">An initial approach considered was a weighted <strong>Intervention Score (0–100)</strong> combining health, occupancy, staleness, blocked %, and % at min into one number. While useful for quick triage, it has a critical flaw:</p>
+        <div style="padding:10px 14px;background:var(--red-l);border-radius:8px;font-size:11px;color:var(--red);font-weight:700;margin-bottom:12px">A single score can't distinguish between a ski resort in off-season (normal) and a listing that's genuinely failing. Both score high. Only one needs action.</div>
+        <p style="font-size:11px;color:var(--grey);line-height:1.6">The <strong>market-context approach</strong> uses the 30d/90d matrix, lead time classification, and market type to determine whether low metrics are <em>expected</em> or <em>alarming</em>. This prevents false positives and avoids unnecessary base price cuts during seasonal dips.</p>
+      </div>
+
+      <!-- ADJUSTED OCCUPANCY -->
+      <div class="meth-card">
+        <div class="meth-title">Adjusted Occupancy</div>
+        <p style="font-size:11px;color:var(--grey);margin-bottom:14px;line-height:1.6">Standard occupancy divides booked nights by total nights. This penalizes properties where hosts block significant calendar portions. <strong>Adjusted Occupancy</strong> reveals the true picture:</p>
+        <div style="padding:14px;background:var(--teal-pale);border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--teal-dark);text-align:center;margin-bottom:14px">Adj. Occ = Booked Nights ÷ Available Nights (Total − Blocked)</div>
+        <p style="font-size:11px;color:var(--grey);line-height:1.6"><strong>Example — Fall Ridge 412:</strong> Shows 10% occupancy, which seems critical. But 85% of nights are host-blocked. Adjusted occupancy is <strong>67%</strong> — the available inventory IS booking. The problem is host behavior, not pricing.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>Gabriel Agrisi Paigel &nbsp;·&nbsp; STR Portfolio Analysis &nbsp;·&nbsp; Going Beyond the Numbers</footer>
+
+<script>
+const DATA=[
+  {name:"1206 W Fletcher",market:"Chicago",hood:"Lakeview",type:"Urban Leisure",typeCls:"urban",br:2,base:207,min:81,mbr:39,stale:24,health:77,occ30:80,adj30:93,occ90:68,bk:2,lead:42,leadCls:"Short Window",blocked:14,atMin:0,signal:"strong",recPct:"+8%",action:"Raise base to ~$224. Strong demand supports increase. 14% blocked — minor, monitor."},
+  {name:"1219 W Oakdale",market:"Chicago",hood:"Lakeview",type:"Urban Leisure",typeCls:"urban",br:6,base:596,min:349,mbr:59,stale:51,health:31,occ30:15,adj30:15,occ90:7,bk:2,lead:4,leadCls:"Last-Minute",blocked:0,atMin:0,signal:"intervention",recPct:"-12%",action:"6BR at $596 in last-minute market (4d lead) is overpriced. Critical health. Lower base to ~$525."},
+  {name:"1217 W Gunnison 1R",market:"Chicago",hood:"Uptown",type:"Urban Mixed",typeCls:"urban",br:2,base:110,min:62,mbr:56,stale:64,health:65,occ30:41,adj30:48,occ90:20,bk:4,lead:41,leadCls:"Short Window",blocked:14,atMin:0,signal:"intervention",recPct:"-5%",action:"Fair health but 64d stale. Low occ both windows. Modest cut to ~$105."},
+  {name:"1918 S Shelby 2B",market:"Chicago",hood:"Pilsen",type:"Urban Emerging",typeCls:"urban",br:1,base:82,min:65,mbr:79,stale:16,health:78,occ30:85,adj30:85,occ90:74,bk:8,lead:58,leadCls:"Standard",blocked:0,atMin:43,signal:"strong",recPct:"+12%",action:"Top performer. 85% occ + 8 bookings/14d. Hitting min 43% — raise base to ~$92 AND lower min to ~$50."},
+  {name:"1632 N Milwaukee 3B",market:"Chicago",hood:"Wicker Park",type:"Urban Trendy",typeCls:"urban",br:0,base:81,min:69,mbr:85,stale:16,health:84,occ30:56,adj30:56,occ90:18,bk:4,lead:17,leadCls:"Short Window",blocked:0,atMin:43,signal:"strong",recPct:"Hold",action:"Health 84 but min 43% at min. Min/Base 85% = algorithm handcuffed. Lower min to ~$55, hold base."},
+  {name:"Fall Ridge 412",market:"Aspen & Vail",hood:"Vail",type:"Resort / Ski",typeCls:"resort",br:4,base:428,min:350,mbr:82,stale:16,health:37,occ30:10,adj30:67,occ90:12,bk:1,lead:19,leadCls:"Short Window",blocked:85,atMin:0,signal:"host",recPct:"Hold",action:"85% blocked by host. Adj. occ = 67% — available dates ARE booking. Coach host, not pricing."},
+  {name:"645 Forest Road",market:"Aspen & Vail",hood:"Vail",type:"Resort / Ski",typeCls:"resort",br:5,base:1896,min:1195,mbr:63,stale:23,health:24,occ30:10,adj30:10,occ90:21,bk:0,lead:91,leadCls:"Standard",blocked:0,atMin:0,signal:"intervention",recPct:"-12%",action:"Critical. Zero revenue, 761d on platform. Lower base to ~$1,668. Consider seasonal base strategy."},
+  {name:"866 Bachelor Ridge",market:"Aspen & Vail",hood:"Beaver Creek",type:"Resort / Ski",typeCls:"resort",br:5,base:1575,min:1350,mbr:86,stale:55,health:9,occ30:3,adj30:3,occ90:14,bk:0,lead:31,leadCls:"Short Window",blocked:0,atMin:100,signal:"intervention",recPct:"-15%",action:"MOST URGENT. Health 9, 100% at min, frozen. Min/Base 86%. Lower min to ~$1,000, base to ~$1,340."},
+  {name:"616 Forest Road West",market:"Aspen & Vail",hood:"Vail",type:"Resort / Ski",typeCls:"resort",br:5,base:1480,min:1195,mbr:81,stale:16,health:80,occ30:40,adj30:40,occ90:28,bk:1,lead:0,leadCls:"Last-Minute",blocked:0,atMin:14,signal:"seasonal",recPct:"Hold",action:"Healthy (80). Low 30d occ normal for ski off-season. 90d at 28% shows demand building. Monitor."},
+  {name:"Mountain View #306",market:"Aspen & Vail",hood:"Vail",type:"Resort / Ski",typeCls:"resort",br:3,base:898,min:510,mbr:57,stale:52,health:87,occ30:33,adj30:33,occ90:35,bk:3,lead:68,leadCls:"Standard",blocked:0,atMin:0,signal:"seasonal",recPct:"+5%",action:"Best Aspen/Vail performer. Health 87, $19K rev. 52d stale — potential raise to ~$943."},
+  {name:"BVILL20 - Bay Village",market:"Hunter Valley",hood:"Nelson Bay",type:"Coastal Weekend",typeCls:"coastal",br:2,base:190,min:180,mbr:95,stale:6,health:39,occ30:13,adj30:13,occ90:24,bk:1,lead:1,leadCls:"Last-Minute",blocked:1,atMin:4,signal:"new",recPct:"Hold",action:"Brand new (6d). Min/Base 95% = fixed pricing. Lower min to ~$150. Give 2–3 weeks before base change."},
+  {name:"KIAH5 - Kiah",market:"Hunter Valley",hood:"Nelson Bay",type:"Coastal Weekend",typeCls:"coastal",br:2,base:200,min:190,mbr:95,stale:6,health:0,occ30:0,adj30:0,occ90:0,bk:0,lead:0,leadCls:"N/A",blocked:100,atMin:0,signal:"host",recPct:"N/A",action:"100% blocked. Not a pricing problem. Host must unblock calendar. Min/Base 95% also needs fixing."},
+  {name:"D0192 - Deer Park 192",market:"NW White Mountains",hood:"Lincoln",type:"Leisure / Nature",typeCls:"nature",br:3,base:260,min:215,mbr:83,stale:37,health:66,occ30:100,adj30:100,occ90:100,bk:1,lead:68,leadCls:"Standard",blocked:0,atMin:0,signal:"strong",recPct:"+12%",action:"Fully booked both windows. Base set 17d before going live. Raise to ~$291. Lower min to ~$185."},
+  {name:"Picasso Suite 1.3 1BR",market:"Barcelona",hood:"Dreta de l'Eixample",type:"Urban Tourism",typeCls:"urban",br:2,base:159,min:69,mbr:43,stale:40,health:28,occ30:10,adj30:11,occ90:3,bk:0,lead:42,leadCls:"Short Window",blocked:10,atMin:45,signal:"intervention",recPct:"-18%",action:"Critical. Zero revenue, 45% at min. Compare Picasso 2.1 (same area, health 89). Lower base to ~$130."},
+  {name:"Sleeps 24 off Paseo",market:"Barcelona",hood:"Dreta de l'Eixample",type:"Urban Tourism",typeCls:"urban",br:9,base:948,min:299,mbr:32,stale:15,health:49,occ30:16,adj30:100,occ90:15,bk:1,lead:278,leadCls:"Far-Out",blocked:84,atMin:16,signal:"host",recPct:"Hold",action:"84% blocked. Available inventory fully booked (adj 100%). Coach host first — then reassess 9BR pricing."},
+  {name:"Picasso Suite 2.1 3BR",market:"Barcelona",hood:"Dreta de l'Eixample",type:"Urban Leisure",typeCls:"urban",br:3,base:214,min:79,mbr:37,stale:2,health:89,occ30:68,adj30:72,occ90:45,bk:2,lead:60,leadCls:"Standard",blocked:5,atMin:37,signal:"strong",recPct:"Hold",action:"Top Barcelona performer. Health 89, just adjusted (2d). 37% at min — watch. If >50%, lower min."},
+  {name:"Bohemian Rhapsody",market:"Barcelona",hood:"Vila de Gràcia",type:"Urban Lifestyle",typeCls:"urban",br:4,base:252,min:89,mbr:35,stale:47,health:23,occ30:6,adj30:6,occ90:2,bk:0,lead:0,leadCls:"N/A",blocked:0,atMin:13,signal:"intervention",recPct:"-18%",action:"Zero bookings in 48d. Gràcia may have lower price ceiling than Eixample. Lower base to ~$207."},
+  {name:"Costa Brava House",market:"Costa Brava Sud",hood:"Mataro",type:"Coastal Weekend",typeCls:"coastal",br:5,base:335,min:299,mbr:89,stale:7,health:64,occ30:93,adj30:100,occ90:65,bk:4,lead:300,leadCls:"Far-Out",blocked:20,atMin:0,signal:"strong",recPct:"+10%",action:"Strong demand, 300d lead. Raise base to ~$369. Lower min to ~$275 for more algorithm flex."},
+  {name:"Picasso Suites 4.4 3BR",market:"Barcelona",hood:"Dreta de l'Eixample",type:"Urban Tourism",typeCls:"urban",br:3,base:300,min:79,mbr:26,stale:25,health:20,occ30:15,adj30:17,occ90:9,bk:0,lead:121,leadCls:"Advance",blocked:10,atMin:96,signal:"intervention",recPct:"-22%",action:"Algorithm frozen — 96% at min despite wide spread. Same area as 2.1 (health 89). Lower base to ~$234."},
+  {name:"Picasso Suites 3.1 3BR",market:"Barcelona",hood:"Dreta de l'Eixample",type:"Urban Tourism",typeCls:"urban",br:4,base:238,min:99,mbr:42,stale:100,health:58,occ30:100,adj30:100,occ90:64,bk:0,lead:300,leadCls:"Far-Out",blocked:34,atMin:2,signal:"strong",recPct:"+12%",action:"Fully booked 30d, 100d stale — major opportunity. Raise base to ~$267. Far-out demand (300d lead)."}
+];
+
+// SIGNAL COUNTS
+const counts={intervention:0,host:0,seasonal:0,strong:0};
+DATA.forEach(p=>{
+  if(p.signal==='intervention')counts.intervention++;
+  else if(p.signal==='host')counts.host++;
+  else if(p.signal==='seasonal'||p.signal==='new')counts.seasonal++;
+  else counts.strong++;
+});
+
+// KPIs
+document.getElementById('kpi-row').innerHTML=`
+  <div class="kpi red"><div class="kpi-val">${counts.intervention}</div><div class="kpi-lbl">Intervention</div></div>
+  <div class="kpi purple"><div class="kpi-val">${counts.host}</div><div class="kpi-lbl">Host Issue</div></div>
+  <div class="kpi yellow"><div class="kpi-val">${counts.seasonal}</div><div class="kpi-lbl">Monitor</div></div>
+  <div class="kpi green"><div class="kpi-val">${counts.strong}</div><div class="kpi-lbl">Strong</div></div>
+  <div class="kpi"><div class="kpi-val">6</div><div class="kpi-lbl">Markets</div></div>`;
+
+// MARKET CARDS
+const MKT={};
+DATA.forEach(p=>{if(!MKT[p.market])MKT[p.market]={type:p.type,typeCls:p.typeCls,props:[]};MKT[p.market].props.push(p)});
+const mg=document.getElementById('market-grid');
+Object.entries(MKT).forEach(([m,d])=>{
+  const ps=d.props, avgH=Math.round(ps.reduce((a,p)=>a+p.health,0)/ps.length),
+        avgO=Math.round(ps.reduce((a,p)=>a+p.occ30,0)/ps.length),
+        intv=ps.filter(p=>p.signal==='intervention').length,
+        host=ps.filter(p=>p.signal==='host').length,
+        issues=intv+host;
+  let barCls='good',barTxt=`✅ No urgent interventions`;
+  if(intv>0){barCls='urgent';barTxt=`🔴 ${intv} need${intv>1?'':'s'} pricing intervention`}
+  else if(host>0){barCls='mixed';barTxt=`⚠️ ${host} host issue${host>1?'s':''} to address`}
+  mg.innerHTML+=`<div class="market-card"><div class="mc-header"><div class="mc-market">${m}</div><div class="mc-type ${d.typeCls}">${d.type}</div></div><div class="mc-stats"><div class="mc-stat"><div class="mc-stat-val">${ps.length}</div><div class="mc-stat-lbl">Properties</div></div><div class="mc-stat"><div class="mc-stat-val">${avgH}</div><div class="mc-stat-lbl">Avg Health</div></div><div class="mc-stat"><div class="mc-stat-val">${avgO}%</div><div class="mc-stat-lbl">Avg Occ 30d</div></div></div><div class="mc-bar ${barCls}">${barTxt}</div></div>`;
+});
+
+// TABLE
+function renderTable(filter){
+  let rows=DATA;
+  if(filter==='intervention')rows=DATA.filter(p=>p.signal==='intervention');
+  else if(filter==='host')rows=DATA.filter(p=>p.signal==='host');
+  else if(filter==='seasonal')rows=DATA.filter(p=>p.signal==='seasonal'||p.signal==='new');
+  else if(filter==='strong')rows=DATA.filter(p=>p.signal==='strong');
+  else if(filter==='Chicago')rows=DATA.filter(p=>p.market==='Chicago');
+  else if(filter==='Aspen')rows=DATA.filter(p=>p.market==='Aspen & Vail');
+  else if(filter==='Barcelona')rows=DATA.filter(p=>p.market==='Barcelona');
+  document.getElementById('tbl-body').innerHTML=rows.map(p=>{
+    const hc=p.health>=80?'good':p.health>=60?'fair':p.health>=40?'poor':'critical';
+    const sgCls=p.signal==='strong'?'sg-strong':p.signal==='intervention'?'sg-intervention':p.signal==='host'?'sg-host':p.signal==='new'?'sg-new':'sg-seasonal';
+    const sgLbl=p.signal==='strong'?'🟢 Strong':p.signal==='intervention'?'🔴 Intervene':p.signal==='host'?'⚠️ Host Issue':p.signal==='new'?'🆕 New':'🟡 Monitor';
+    const rpCls=p.recPct.startsWith('+')?'up':p.recPct.startsWith('-')?'down':'hold';
+    const o30c=p.occ30<30?'var(--red)':p.occ30>=70?'var(--green)':'var(--text)';
+    const a30c=p.adj30<30?'var(--red)':p.adj30>=70?'var(--green)':'var(--text)';
+    const mbrC=p.mbr>85?'var(--red)':p.mbr>75?'var(--orange)':'var(--text)';
+    const amC=p.atMin>=50?'var(--red)':p.atMin>=30?'var(--orange)':'var(--text)';
+    return `<tr>
+      <td><div class="prop-name">${p.name}</div><div class="prop-sub">${p.hood} · ${p.br}BR</div></td>
+      <td><span class="type-tag t-${p.typeCls}">${p.type}</span></td>
+      <td><div class="health-pill ${hc}">${p.health}</div></td>
+      <td style="font-weight:800;color:${o30c}">${p.occ30}%</td>
+      <td style="font-weight:700;color:${a30c}">${p.adj30}%</td>
+      <td style="font-weight:700">${p.occ90}%</td>
+      <td style="font-weight:800;color:${mbrC}">${p.mbr}%</td>
+      <td style="font-weight:800;color:${amC}">${p.atMin}%</td>
+      <td><span style="font-weight:700">${p.lead>0?p.lead+'d':'—'}</span><div class="prop-sub">${p.leadCls}</div></td>
+      <td><span class="signal-tag ${sgCls}">${sgLbl}</span></td>
+      <td><span class="rec-pct ${rpCls}">${p.recPct}</span></td>
+      <td><div class="rec-cell">${p.action}</div></td>
+    </tr>`;
+  }).join('');
+}
+renderTable('all');
+
+function applyFilter(f,btn){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderTable(f)}
+function showTab(id,btn){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');btn.classList.add('active')}
+</script>
+</body>
+</html>
