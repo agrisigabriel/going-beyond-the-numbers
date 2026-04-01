@@ -83,15 +83,3 @@ Color coding follows financial modeling conventions:
 - **Purple background** — host behavior issue
 
 ---
-
-## Assignment #2
-
-*Coming soon — will be added after the live review session.*
-
----
-
-## About
-
-This analysis was completed as part of a Senior Revenue Manager selection process. The goal was to demonstrate analytical depth, platform understanding, and the ability to translate data into actionable revenue management recommendations.
-
-**Author:** Gabriel Agrisi Paigel
