@@ -4,7 +4,7 @@ A market-context approach to dynamic pricing portfolio management for short-term
 
 ## Live Dashboard
 
-**[View Interactive Dashboard](https://gagrisi.github.io/going-beyond-the-numbers/)**
+**[View Interactive Dashboard](https://agrisigabriel.github.io/going-beyond-the-numbers/)**
 
 ---
 
